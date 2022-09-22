@@ -8,15 +8,18 @@ public class Pawn : Piece{
     public override bool CheckMove(int x,int y){
         switch(x-this.x){
             case 0:
-                if(this.y+(int)color==y) return true; //the basic move
-                else if(move_count==0&&this.y+2*(int)color==y){ //advance 2 squares during the first move
-                    return (_my_board[x,y]==null);
-                }
+               // Console.WriteLine(this.y+" "+y+" "+move_count+" "+(this.y+2*(int)color)+"???");
+                if(this.y+(int)color==y) return (_my_board[x,this.y+(int)color]==null); //the basic move
+                else if(move_count==0 && this.y+2*(int)color==y){ //advance 2 squares during the first move
+                    return (_my_board[x,this.y+(int)color]==null && _my_board[x,this.y+2*(int)color]==null);
+                } 
                 else return false; //nothing else is legal, I guess
+
+                 
             case -1:
             case 1:
                 if(this.y+(int)color==y){
-                    return _my_board[x,y].color!=color;
+                    return (int)_my_board.GetPieceType(x,y)*(int)color<0;
                 }
                 else return false;
             default:
@@ -31,8 +34,8 @@ public class Pawn : Piece{
     }
 
     public override bool CheckForChecksOrPins(){
-        if(_my_board[x-1,y+(int)color].type==PieceType.King&&_my_board[x,y].color!=color) return true;
-        if(_my_board[x+1,y+(int)color].type==PieceType.King&&_my_board[x,y].color!=color) return true;
+        if(x>0 && (int)_my_board.GetPieceType(x-1,y+(int)color)*(int)color==(int)PieceType.King) return true;
+        if(x<7 && (int)_my_board.GetPieceType(x+1,y+(int)color)*(int)color==(int)PieceType.King) return true;
         return false;
     }
 

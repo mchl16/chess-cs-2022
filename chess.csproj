@@ -25,5 +25,9 @@
     <Content Include="src\client\game_client.cs" />
     <Content Include="src\client\menu.cs" />
     <Content Include="src\lines.sh" />
+    <Content Include="src\display\Display.cs" />
+    <Content Include="src\client\parser.cs" />
+    <Content Include="src\io\io.cs" />
+    <Content Include="src\client\command_parser.cs" />
   </ItemGroup>
 </Project>

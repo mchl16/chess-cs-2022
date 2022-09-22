@@ -1,10 +1,12 @@
 using System;
 
-public abstract class Display{
+public class Display{
+    /* methods */
+
     public virtual void DisplayBoard(Board board){
         for(int i=7;i>=0;--i){
             for(int j=0;j<8;++j){
-                switch(board.GetPieceType(i,j)){
+                switch(board.GetPieceType(j,i)){
                     case 0:
                         Console.Write(".");
                         break;
@@ -52,4 +54,6 @@ public abstract class Display{
     }
 
     public virtual string? GetInput() => Console.ReadLine();
+
+    public virtual void PrintMessage(string s) => Console.WriteLine(s);
 }

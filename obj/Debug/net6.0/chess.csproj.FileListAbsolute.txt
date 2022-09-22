@@ -3,3 +3,13 @@ c:\Users\moche\Desktop\chess\obj\Debug\net6.0\chess.GeneratedMSBuildEditorConfig
 c:\Users\moche\Desktop\chess\obj\Debug\net6.0\chess.AssemblyInfoInputs.cache
 c:\Users\moche\Desktop\chess\obj\Debug\net6.0\chess.AssemblyInfo.cs
 c:\Users\moche\Desktop\chess\obj\Debug\net6.0\chess.csproj.CoreCompileInputs.cache
+C:\Users\moche\Desktop\chess\bin\Debug\net6.0\chess.exe
+C:\Users\moche\Desktop\chess\bin\Debug\net6.0\chess.deps.json
+C:\Users\moche\Desktop\chess\bin\Debug\net6.0\chess.runtimeconfig.json
+C:\Users\moche\Desktop\chess\bin\Debug\net6.0\chess.dll
+C:\Users\moche\Desktop\chess\bin\Debug\net6.0\chess.pdb
+C:\Users\moche\Desktop\chess\obj\Debug\net6.0\chess.dll
+C:\Users\moche\Desktop\chess\obj\Debug\net6.0\refint\chess.dll
+C:\Users\moche\Desktop\chess\obj\Debug\net6.0\chess.pdb
+C:\Users\moche\Desktop\chess\obj\Debug\net6.0\chess.genruntimeconfig.cache
+C:\Users\moche\Desktop\chess\obj\Debug\net6.0\ref\chess.dll

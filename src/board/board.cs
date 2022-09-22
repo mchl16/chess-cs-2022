@@ -40,10 +40,10 @@ public class Board{
             case BoardInitMode.DefaultPosition: 
                 for (int i=0;i<8;++i){
                     pieces[i,1]=new Pawn(this,Piece.Color.White,i,1);
-                    pieces[i,7]=new Pawn(this,Piece.Color.Black,i,7);
+                    pieces[i,6]=new Pawn(this,Piece.Color.Black,i,6);
                 }
             
-                pieces[0,0]=new Rook(this,Piece.Color.White,0,0); //ugly code, I know
+                pieces[0,0]=new Rook(this,Piece.Color.White,0,0); //ugly code, I know, it'll be fixed later
                 pieces[7,0]=new Rook(this,Piece.Color.White,7,0);
                 pieces[0,7]=new Rook(this,Piece.Color.Black,0,7);
                 pieces[7,7]=new Rook(this,Piece.Color.Black,7,7);
@@ -61,8 +61,8 @@ public class Board{
                 pieces[3,0]=new Queen(this,Piece.Color.White,3,0);
                 pieces[3,7]=new Queen(this,Piece.Color.Black,3,7);
 
-                pieces[4,0]=new King(this,Piece.Color.White,3,0); //kings go last, they're shit
-                pieces[4,7]=new King(this,Piece.Color.Black,3,7);
+                pieces[4,0]=new King(this,Piece.Color.White,4,0); //kings go last, they're shit
+                pieces[4,7]=new King(this,Piece.Color.Black,4,7);
 
                 break;
 
@@ -78,12 +78,15 @@ public class Board{
         return (int)pieces[x,y].type*(int)pieces[x,y].color;
     }
 
-    public void MakeMove(int x0,int y0,int x,int y){
+    public void MakeMove(Piece.Color color,int x0,int y0,int x,int y){
         if(x==x0&&y==y0) throw new ArgumentException("A piece must be moved to another field");
         if(pieces[x0,y0]==null) throw new ArgumentException("No piece at the selected field");
+        if(pieces[x0,y0].color!=color) throw new ArgumentException("You can only move pieces of your color");
         if(GetPieceType(x,y).CompareTo(0)*GetPieceType(x0,y0).CompareTo(0)==1){
             throw new ArgumentException("Cannot move a piece to a field occupied by another piece of the same color");
         }
+
+        if(x<0||x>7||y<0||y>7) throw new ArgumentException("Cannot move a piece outside the board");
 
         if(pieces[x0,y0].CheckMove(x,y)) pieces[x0,y0].MoveTo(x,y); //actually move a piece to its new place
         else throw new ArgumentException("Illegal move");

@@ -58,7 +58,7 @@ public abstract class Piece{
 
     public abstract bool CheckForChecksOrPins();
 
-    protected bool CheckDirectional(Direction dir){
+    protected bool CheckForChecksOrPinsDirectional(Direction dir){
         Piece? ptr=null;
         int x2=0,y2=0;
         switch((int)dir){
@@ -114,5 +114,36 @@ public abstract class Piece{
             
         }
         return res;
+    }
+
+    protected bool CheckMoveHorizontalVertical(int x,int y){
+        int f;
+        if(this.x==x){
+            f=y.CompareTo(this.y);
+            for (int i=this.y+f;i!=y;i+=f) if(_my_board[x,i]!=null) return false;
+            return true;
+        }
+        else if(this.y==y){
+            f=x.CompareTo(this.x);
+            
+            for (int i=this.x+f;i!=x;i+=f) if(_my_board[i,y]!=null) return false;
+            return true;
+        }
+        else return false;
+    }
+
+    protected bool CheckMoveDiagonal(int x,int y){
+        int f;
+        if(this.x+y==this.y+x){ //right diagonal
+            f=x.CompareTo(this.x);
+            for (int i=this.x+f,j=this.y+f;i!=x+f;i+=f,j+=f) if(_my_board[i,j]!=null) return false;
+            return true;
+        }
+        else if(x+y==this.x+this.y){ //left diagonal
+            f=x.CompareTo(this.x);
+            for (int i=this.x+f,j=this.y-f;i!=x+f;i+=f,j-=f) if(_my_board[i,j]!=null) return false;
+            return true;
+        }
+        else return false;
     }
 }
