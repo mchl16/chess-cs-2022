@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="src\piece.cs" />
+    <Content Include="src\pieces\pawn" />
+    <Content Include="src\pieces\pawn.cs" />
+    <Content Include="src\pieces\piece.cs" />
+    <Content Include="src\pieces\rook,cs" />
+    <Content Include="src\board\board.cs" />
+    <Content Include="src\pieces\rook.cs" />
+    <Content Include="src\pieces\knight.cs" />
+    <Content Include="src\main.cs" />
+    <Content Include="src\pieces\bishop.cs" />
+    <Content Include="src\pieces\king.cs" />
+    <Content Include="src\pieces\queen.cs" />
+    <Content Include="src\display\IDisplay.cs" />
+    <Content Include="src\client\IClient.cs" />
+    <Content Include="src\client\client.cs" />
+    <Content Include="src\client\game_client.cs" />
+    <Content Include="src\client\menu.cs" />
+    <Content Include="src\lines.sh" />
+  </ItemGroup>
+</Project>
