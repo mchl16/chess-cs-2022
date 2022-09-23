@@ -5,9 +5,9 @@ using System;
 public class Board{
     /* fields */
 
-    public Piece[,] pieces{get;private set;}
+    public Piece[,] pieces{get;protected set;}
 
-    public Piece this[int a,int b]{
+    public Piece this[int a,int b]{ //a bit of syntactic sugar, ma'am
         get => pieces[a,b];
         private set => pieces[a,b]=value;
     }
@@ -20,7 +20,9 @@ public class Board{
         Both=0x3
     };
 
-    public AttackType[,] attacked{get;private set;}
+    public AttackType[,] attacked{get;protected set;}
+
+    public bool en_passant; 
     
     /* constructors and destructors */
 
@@ -88,7 +90,10 @@ public class Board{
 
         if(x<0||x>7||y<0||y>7) throw new ArgumentException("Cannot move a piece outside the board");
 
-        if(pieces[x0,y0].CheckMove(x,y)) pieces[x0,y0].MoveTo(x,y); //actually move a piece to its new place
+        if(pieces[x0,y0].CheckMove(x,y)){
+            pieces[x0,y0].MoveTo(x,y); //actually move a piece to its new place
+            if(en_passant) pieces[x,y0]=null!; //en passant capture, what a horrid feature to code given how rare it is
+        }
         else throw new ArgumentException("Illegal move");
 
         foreach(var i in pieces) if(i!=null) i.CheckForChecksOrPins();

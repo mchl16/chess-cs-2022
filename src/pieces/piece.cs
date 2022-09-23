@@ -61,32 +61,32 @@ public abstract class Piece{
     protected bool CheckForChecksOrPinsDirectional(Direction dir){
         Piece? ptr=null;
         int x2=0,y2=0;
-        switch((int)dir){
-            case 1:
+        switch(dir){
+            case Direction.Up:
                 ++y2;
                 break;
-            case 2:
+            case Direction.UpRight:
                 ++x2;
                 ++y2;
                 break;
-            case 3:
+            case Direction.Right:
                 ++x2;
                 break;
-            case 4:
+            case Direction.DownRight:
                 ++x2;
                 --y2;
                 break;
-            case 5:
+            case Direction.Down:
                 --y2;
                 break;
-            case 6:
+            case Direction.DownLeft:
                 --x2;
                 --y2;
                 break;
-            case 7:
+            case Direction.Left:
                 --x2;
                 break;
-            case 8:
+            case Direction.UpLeft:
                 --x2;
                 ++y2;
                 break;

@@ -33,7 +33,7 @@ public static class CommandParser{
                     default:
                         throw new ArgumentException("Provided an incorrect argument");
                 }
-                break;
+                
             default:
                 throw new ArgumentException("Bad command or file name");
         }

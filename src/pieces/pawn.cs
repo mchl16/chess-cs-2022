@@ -1,14 +1,19 @@
 using System;
 
 public class Pawn : Piece{
+    /* fields and properties */
+
     public override PieceType type{get=>PieceType.Pawn;}
 
+    /* constructors and destructors */
+
     public Pawn(Board board,Color color,int x,int y) : base(board,color,x,y){}
+
+    /* methods */
 
     public override bool CheckMove(int x,int y){
         switch(x-this.x){
             case 0:
-               // Console.WriteLine(this.y+" "+y+" "+move_count+" "+(this.y+2*(int)color)+"???");
                 if(this.y+(int)color==y) return (_my_board[x,this.y+(int)color]==null); //the basic move
                 else if(move_count==0 && this.y+2*(int)color==y){ //advance 2 squares during the first move
                     return (_my_board[x,this.y+(int)color]==null && _my_board[x,this.y+2*(int)color]==null);
@@ -19,7 +24,13 @@ public class Pawn : Piece{
             case -1:
             case 1:
                 if(this.y+(int)color==y){
-                    return (int)_my_board.GetPieceType(x,y)*(int)color<0;
+                    if((int)_my_board.GetPieceType(x,y)*(int)color<0) return true;
+                    else if((int)_my_board.GetPieceType(x,this.y)==-(int)PieceType.Pawn*(int)color){ //en passant
+                        
+                        return _my_board[x,this.y].move_count==1; 
+                    }
+                    else return false;
+
                 }
                 else return false;
             default:
@@ -30,7 +41,6 @@ public class Pawn : Piece{
     protected override void PostMove(){
         if(y==7) _my_board.MovePiece(Promote(x,7),x,7); //replace pawn with a new piece
         else if(y==0) _my_board.MovePiece(Promote(x,0),x,0);
-        else return;
     }
 
     public override bool CheckForChecksOrPins(){

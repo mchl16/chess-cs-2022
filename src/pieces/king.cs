@@ -6,24 +6,43 @@ class King : Piece{
     public King(Board board,Color color,int x,int y) : base(board,color,x,y){}
 
     public override bool CheckMove(int x,int y){
-        if(x-this.x<=1 && this.x-x<=1 && y-this.y<=1 && this.y-y<=1){
-            return (_my_board.attacked[x,y]&(color==Color.White ? Board.AttackType.White : Board.AttackType.Black))!=0;
-        }
+        if(x-this.x<=1 && this.x-x<=1 && y-this.y<=1 && this.y-y<=1) return !CheckAttack(x,y);
         else if(move_count==0 && y==this.y){ //castling 
             
             switch(x-this.x){
                 case 2: //king's side castling
-                    Console.WriteLine("?");
-                    return true;
+                    return CheckCastle(CastleDirection.King);
                 case -2: //queen's side castling
-                    Console.WriteLine("??");
-                    return true;
+                    return CheckCastle(CastleDirection.Queen);
                 default:
                     Console.WriteLine(x-this.x);
                     return false;
             }
         } 
         else return false;
+    }
+
+    protected bool CheckAttack(int x,int y){
+        return (_my_board.attacked[x,y]&(color==Color.White ? Board.AttackType.Black : Board.AttackType.White))!=0;
+    }
+
+    protected enum CastleDirection{
+        Queen=-1,
+        King=1
+    };
+
+    protected bool CheckCastle(CastleDirection dir){
+        int k=(int)dir;
+        if(_my_board.GetPieceType((k==-1 ? 0 : 7),y)*(int)color!=(int)PieceType.Rook) return false;
+        if(_my_board[(k==-1 ? 0 : 7),y].move_count>0) return false;
+
+        if(_my_board[k+4,y]!=null) return false; //nothing can obstruct our darlings
+        if(_my_board[2*k+4,y]!=null) return false; //king cheating on his wife with a rook smh
+        if(k==-1 && _my_board[1,y]!=null) return false;
+
+        if(CheckAttack(k+4,y) || CheckAttack(2*k+4,y)) return false; //fields on king's way cannot be attacked
+        
+        return true;
     }
 
     public override void MoveTo(int x,int y){
