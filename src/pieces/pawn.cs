@@ -5,6 +5,8 @@ public class Pawn : Piece{
 
     public override PieceType type{get=>PieceType.Pawn;}
 
+    public int move_count{get;protected set;}
+
     /* constructors and destructors */
 
     public Pawn(Board board,Color color,int x,int y) : base(board,color,x,y){}
@@ -14,9 +16,10 @@ public class Pawn : Piece{
     public override bool CheckMove(int x,int y){
         switch(x-this.x){
             case 0:
-                if(this.y+(int)color==y) return (_my_board[x,this.y+(int)color]==null); //the basic move
-                else if(move_count==0 && this.y+2*(int)color==y){ //advance 2 squares during the first move
-                    return (_my_board[x,this.y+(int)color]==null && _my_board[x,this.y+2*(int)color]==null);
+                if(this.y+(int)color==y) return (_my_board[x,this.y+(int)color].piece==null); //the basic move
+                else if(!moved && this.y+2*(int)color==y){ //advance 2 squares during the first move
+                    
+                    return (_my_board[x,this.y+(int)color].piece==null && _my_board[x,this.y+2*(int)color].piece==null);
                 } 
                 else return false; //nothing else is legal, I guess
 
@@ -24,28 +27,28 @@ public class Pawn : Piece{
             case -1:
             case 1:
                 if(this.y+(int)color==y){
-                    if((int)_my_board.GetPieceType(x,y)*(int)color<0) return true;
-                    else if((int)_my_board.GetPieceType(x,this.y)==-(int)PieceType.Pawn*(int)color){ //en passant
-                        
-                        return _my_board[x,this.y].move_count==1; 
+                    if((int)_my_board[x,y].piece_type*(int)color<0) return true;
+                    else if((int)_my_board[x,this.y].piece_type==-(int)PieceType.Pawn*(int)color){ //en passant
+                        if(_my_board.en_passant){
+                            return (_my_board.last_x==x && _my_board.last_y==this.y);
+                        }
                     }
-                    else return false;
-
                 }
-                else return false;
+                return false;
             default:
                 return false;
         }        
     }
 
     protected override void PostMove(){
+        if(++move_count==1 && (y==3 || y==4)) _my_board.en_passant=true;
         if(y==7) _my_board.MovePiece(Promote(x,7),x,7); //replace pawn with a new piece
         else if(y==0) _my_board.MovePiece(Promote(x,0),x,0);
     }
 
     public override bool CheckForChecksOrPins(){
-        if(x>0 && (int)_my_board.GetPieceType(x-1,y+(int)color)*(int)color==(int)PieceType.King) return true;
-        if(x<7 && (int)_my_board.GetPieceType(x+1,y+(int)color)*(int)color==(int)PieceType.King) return true;
+        if(x>0 && (int)_my_board[x-1,y+(int)color].piece_type*(int)color==(int)PieceType.King) return true;
+        if(x<7 && (int)_my_board[x+1,y+(int)color].piece_type*(int)color==(int)PieceType.King) return true;
         return false;
     }
 

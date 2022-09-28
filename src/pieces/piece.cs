@@ -17,7 +17,7 @@ public abstract class Piece{
     public enum Color{White=1,Black=-1};
     public Color color{get;init;}
 
-    public int move_count{get;protected set;}
+    public bool moved{get;protected set;}
 
     protected Board _my_board; //there will probably be a single board
 
@@ -38,7 +38,7 @@ public abstract class Piece{
         this.color=color;
         this.x=x;
         this.y=y;
-        this.move_count=0;
+        this.moved=false;
         this.pinned_from=Direction.None;
     }
 
@@ -50,7 +50,7 @@ public abstract class Piece{
         _my_board.MovePiece(this,x,y);
         this.x=x;
         this.y=y;
-        ++this.move_count;
+        this.moved=true;
         PostMove();
     }
 
@@ -95,18 +95,16 @@ public abstract class Piece{
         }
 
         bool res=false;
-        for (int x=this.x+x2,y=this.y+y2;x>=0&&x<8&&y>=0&&y<8;x+=x2,y+=y2){
-            if(ptr!=null){
-                _my_board.attacked[x,y]=(Board.AttackType)((int)_my_board.attacked[x,y]|(color==Color.White ? 0x1 : 0x2));
-            }
-            
-            switch((int)_my_board.GetPieceType(x,y)*(int)color){
+        for (int x=this.x+x2,y=this.y+y2;x>=0 && x<8 && y>=0 && y<8;x+=x2,y+=y2){     
+            _my_board[x,y].attacked|=(color==Color.White ? Board.AttackType.White : Board.AttackType.Black);
+
+            switch((int)_my_board[x,y].piece_type*(int)color){
                 case <0:
-                    if(_my_board[x,y].type==PieceType.King){
+                    if(_my_board[x,y].piece.type==PieceType.King){
                         if(ptr!=null) ptr.pinned_from=dir;
                         res=true;
                     }
-                    else ptr=_my_board[x,y];
+                    else ptr=_my_board[x,y].piece;
                     break;
                 case >0:
                     return res;
@@ -120,13 +118,13 @@ public abstract class Piece{
         int f;
         if(this.x==x){
             f=y.CompareTo(this.y);
-            for (int i=this.y+f;i!=y;i+=f) if(_my_board[x,i]!=null) return false;
+            for (int i=this.y+f;i!=y;i+=f) if(_my_board[x,i].piece!=null) return false;
             return true;
         }
         else if(this.y==y){
             f=x.CompareTo(this.x);
             
-            for (int i=this.x+f;i!=x;i+=f) if(_my_board[i,y]!=null) return false;
+            for (int i=this.x+f;i!=x;i+=f) if(_my_board[i,y].piece!=null) return false;
             return true;
         }
         else return false;
@@ -136,12 +134,12 @@ public abstract class Piece{
         int f;
         if(this.x+y==this.y+x){ //right diagonal
             f=x.CompareTo(this.x);
-            for (int i=this.x+f,j=this.y+f;i!=x+f;i+=f,j+=f) if(_my_board[i,j]!=null) return false;
+            for (int i=this.x+f,j=this.y+f;i!=x+f;i+=f,j+=f) if(_my_board[i,j].piece!=null) return false;
             return true;
         }
         else if(x+y==this.x+this.y){ //left diagonal
             f=x.CompareTo(this.x);
-            for (int i=this.x+f,j=this.y-f;i!=x+f;i+=f,j-=f) if(_my_board[i,j]!=null) return false;
+            for (int i=this.x+f,j=this.y-f;i!=x+f;i+=f,j-=f) if(_my_board[i,j].piece!=null) return false;
             return true;
         }
         else return false;

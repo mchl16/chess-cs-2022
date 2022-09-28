@@ -1,6 +1,21 @@
 using System;
 
 public static class CommandParser{
+    
+
+    public struct ParseResult{
+        public enum ParseType{
+            Move,
+            Promote,
+            Draw,
+            GiveUp,
+
+        };
+
+        ParseType result;
+        int[] data;
+    }
+
     public static int[] Parse(string s){
         string[] tokens=s.Split();
         if(tokens.Length==0) throw new ArgumentException("Empty command");
@@ -34,6 +49,11 @@ public static class CommandParser{
                         throw new ArgumentException("Provided an incorrect argument");
                 }
                 
+
+            case "end!" or "exit!":
+                Environment.Exit(0);    
+                return new int[1];
+
             default:
                 throw new ArgumentException("Bad command or file name");
         }

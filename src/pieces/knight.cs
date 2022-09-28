@@ -27,7 +27,8 @@ class Knight : Piece{
             int x=this.x+a;
             int y=this.y+b;
             if(x>=0 && x<8 && y>=0 && y<8){
-                if((int)_my_board.GetPieceType(x,y)*(int)color==(int)PieceType.King) return true;
+                _my_board[x,y].attacked|=(color==Color.White ? Board.AttackType.White : Board.AttackType.Black);
+                if((int)_my_board[x,y].piece_type*(int)color==(int)PieceType.King) return true;
             }
             
             int tmp=a; //this shit generates all 8 knight positions (maybe I'll come up with sth more elegant)

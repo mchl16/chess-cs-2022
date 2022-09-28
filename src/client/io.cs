@@ -1,12 +1,12 @@
 using System;
 
-public class Display{
+public class IO{
     /* methods */
 
     public virtual void DisplayBoard(Board board){
         for(int i=7;i>=0;--i){
             for(int j=0;j<8;++j){
-                switch(board.GetPieceType(j,i)){
+                switch(board[j,i].piece_type){
                     case 0:
                         Console.Write(".");
                         break;
@@ -56,4 +56,14 @@ public class Display{
     public virtual string GetInput() => Console.ReadLine() ?? "";
 
     public virtual void PrintMessage(string s) => Console.WriteLine(s);
+
+    public virtual string HandlePromoteEvent(){
+        PrintMessage("Promote a pawn at to:");
+        return GetInput();
+    }
+
+    public virtual string HandleYesNoEvent(string message){
+        PrintMessage(message);
+        return GetInput();
+    }
 }

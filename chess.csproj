@@ -29,5 +29,7 @@
     <Content Include="src\client\parser.cs" />
     <Content Include="src\io\io.cs" />
     <Content Include="src\client\command_parser.cs" />
+    <Content Include="src\board\board_creator.cs" />
+    <Content Include="src\client\io.cs" />
   </ItemGroup>
 </Project>

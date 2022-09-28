@@ -5,20 +5,7 @@ public class Bishop : Piece{
 
     public Bishop(Board board,Color color,int x,int y) : base(board,color,x,y){}
 
-    public override bool CheckMove(int x,int y){
-        int f;
-        if(this.x+y==this.y+x){ //right diagonal
-            f=x.CompareTo(this.x);
-            for (int i=this.x+f,j=this.y+f;i!=x+f;i+=f,j+=f) if(_my_board[i,j]!=null) return false;
-            return true;
-        }
-        else if(x+y==this.x+this.y){ //left diagonal
-            f=x.CompareTo(this.x);
-            for (int i=this.x+f,j=this.y-f;i!=x+f;i+=f,j-=f) if(_my_board[i,j]!=null) return false;
-            return true;
-        }
-        else return false;
-    }
+    public override bool CheckMove(int x,int y) => CheckMoveDiagonal(x,y);
 
     public override bool CheckForChecksOrPins(){
         for (int i=2;i<=8;i+=2) if(CheckForChecksOrPinsDirectional((Direction)i)) return true;
