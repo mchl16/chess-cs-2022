@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 public partial class Board{
     /* fields */
+
     public class Field{
         public Piece piece;
         
@@ -35,12 +37,13 @@ public partial class Board{
         Both=0x3
     };
 
+    public AttackType check{get;protected set;}
+
     public int move_count{get;protected set;}
 
-    public bool check{get;protected set;}
-
-    public int last_x{get;protected set;}=-1;
+    public int last_x{get;protected set;}=-1; //coordinates of the field the last move was FROM
     public int last_y{get;protected set;}=-1;
+    
 
     public bool en_passant;
 
@@ -75,10 +78,8 @@ public partial class Board{
         public enum Type{
             NothingSpecial=0,
             Promote=1,
-            CheckWhite=2,
-            CheckBlack=3,
-            CheckMateWhite=4,
-            CheckMateBlack=5,
+            Check=2,
+            Checkmate=3,
             Error=2137
         };
 
@@ -93,7 +94,7 @@ public partial class Board{
 
     /* methods */
 
-    public InputCallback MakeMove(Piece.Color color,int x0,int y0,int x,int y){
+    protected InputCallback CheckBasicConditions(Piece.Color color,int x0,int y0,int x,int y){
         if(x==x0 && y==y0){
             return new InputCallback(InputCallback.Type.Error,"A piece must be moved to another field");
         }
@@ -101,7 +102,7 @@ public partial class Board{
             return new InputCallback(InputCallback.Type.Error,"No piece at the selected field");
         }
         if(fields[x0,y0].piece.color!=color){
-            return new InputCallback(InputCallback.Type.Error,"You can only move pieces of your color");
+            return new InputCallback(InputCallback.Type.Error,"Cannot move pieces of opposite color");
         }
         if(fields[x,y].piece_type.CompareTo(0)*fields[x0,y0].piece_type.CompareTo(0)==1){
             return new InputCallback(InputCallback.Type.Error,
@@ -112,7 +113,36 @@ public partial class Board{
             return new InputCallback(InputCallback.Type.Error,"Cannot move a piece outside the board");
         }
 
+        return new InputCallback(InputCallback.Type.NothingSpecial,"");
+    }
+
+    protected struct PiecePrevious{
+        public Piece piece;
+        public int x;
+        public int y;
+
+        public PiecePrevious(Piece piece,int x,int y){
+            this.piece=piece;
+            this.x=x;
+            this.y=y;
+        }
+    }
+
+    public InputCallback MakeMove(Piece.Color color,int x0,int y0,int x,int y,bool test=false){
+        last_x=x0;
+        last_y=y0;
+
+        Piece? taken_piece;
+        if(fields[x,y].piece!=null) taken_piece=fields[x,y].piece;
+        else if(en_passant && fields[x,y0].piece!=null) taken_piece=fields[x,y0].piece;
+
+        var check1=CheckBasicConditions(color,x0,y0,x,y);
+        if(check1.result!=InputCallback.Type.NothingSpecial) return check1;
+
+        List<PiecePrevious> prevs=new();
+
         if(fields[x0,y0].piece.CheckMove(x,y)){
+            prevs.Add(new PiecePrevious(fields[x0,y0].piece,x0,y0));
             fields[x0,y0].piece.MoveTo(x,y); //actually move a piece to its new place
             if(en_passant && last_x==x && last_y==y0){
                 fields[x,y0].piece=null!; //en passant capture, what an awful rule
@@ -121,17 +151,40 @@ public partial class Board{
         }
         else return new InputCallback(InputCallback.Type.Error,"Illegal move");
 
-        ++move_count;
-        last_x=x;
-        last_y=y;
-        
-        bool check=false;
-
+        foreach(var i in fields) i.attacked=AttackType.None;
+        AttackType check=AttackType.None;
         foreach(var i in fields) if(i.piece!=null) check|=i.piece.CheckForChecksOrPins();
+        if((check&(color==Piece.Color.White ? AttackType.Black : AttackType.White))!=AttackType.None){
+            return new InputCallback(InputCallback.Type.Error,"Cannot move a piece so king is attacked afterwards");
+        }
 
-        InputCallback.Type res=(InputCallback.Type)(check ? 2+(move_count%2) : 0);
+        ++move_count;
+        en_passant=false;
 
-        return new InputCallback(res,"");
+        if(check!=Board.AttackType.None){
+            if(test) return new InputCallback(InputCallback.Type.Check,"");
+            return new InputCallback(FindCheckSolutions(color) ? InputCallback.Type.Check : InputCallback.Type.Checkmate,"");
+        }
+        else return new InputCallback(InputCallback.Type.NothingSpecial,"");
+
+    }
+
+    protected bool FindCheckSolutions(Piece.Color color){
+        for (int x0=0;x0<8;++x0) for (int y0=0;y0<8;++y0){
+            if(fields[x0,y0].piece_type*(int)color<=0) continue;
+            for (int x=0;x<8;++x) for (int y=0;y<8;++y){
+                Piece.Color col=color==Piece.Color.White ? Piece.Color.Black : Piece.Color.White;
+                if(MakeMove(col,x0,y0,x,y,true).result!=InputCallback.Type.Check) return true; 
+            }
+        }
+        return false;
+    }
+
+    protected void RestorePieces(IEnumerable<PiecePrevious> prevs){
+        foreach(var i in prevs.Reverse()){
+            MovePiece(i.piece,i.x,i.y);
+            i.piece.RestoreMoveCount(this);
+        }
     }
 
     public void MovePiece(Piece piece,int x,int y){

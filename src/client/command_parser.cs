@@ -18,10 +18,13 @@ public static class CommandParser{
 
     public static int[] Parse(string s){
         string[] tokens=s.Split();
-        if(tokens.Length==0) throw new ArgumentException("Empty command");
+        if(tokens.Length==0) return new int[]{-1}; //do nothing if no command is 
 
         int[] res;
         switch(tokens[0]){
+            case "#": //ignore comments/annotations etc. - useful for unit testing
+                return new int[]{-1};
+
             case "move":
                 if(tokens.Length!=3) throw new ArgumentException("Provided an incorrect number of arguments");
                 int[] t1,t2;

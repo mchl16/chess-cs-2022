@@ -14,14 +14,19 @@ public abstract class Piece{
 
     public abstract PieceType type{get;}
 
-    public enum Color{White=1,Black=-1};
+    public enum Color{
+        White=1,
+        Black=-1
+    };
+
     public Color color{get;init;}
 
-    public bool moved{get;protected set;}
+    public int move_count{get;protected set;}
 
-    protected Board _my_board; //there will probably be a single board
+    public bool moved{get => move_count==0;}
 
-    //to make the Board class responsible for storing this (or not? it's actually convenient this way)
+    protected Board _my_board;
+
     public int x{get;protected set;}
     public int y{get;protected set;}    
 
@@ -29,7 +34,7 @@ public abstract class Piece{
         None, Up, UpRight, Right, DownRight, Down, DownLeft, Left, UpLeft
     };
 
-    public Direction pinned_from;
+    protected Board.AttackType attack_type{get=>color==Color.White ? Board.AttackType.White : Board.AttackType.Black;}
 
     /* constructors and destructors */
 
@@ -38,8 +43,7 @@ public abstract class Piece{
         this.color=color;
         this.x=x;
         this.y=y;
-        this.moved=false;
-        this.pinned_from=Direction.None;
+        this.move_count=0;
     }
 
     /* methods */
@@ -50,68 +54,69 @@ public abstract class Piece{
         _my_board.MovePiece(this,x,y);
         this.x=x;
         this.y=y;
-        this.moved=true;
+        ++this.move_count;
         PostMove();
     }
 
-    protected virtual void PostMove(){} //to be overridden for pawns
+    protected virtual Board.InputCallback PostMove(){ //to be overridden by pawns when they promote
+        return new Board.InputCallback(Board.InputCallback.Type.NothingSpecial,"");
+    }  
 
-    public abstract bool CheckForChecksOrPins();
+    public abstract Board.AttackType CheckForChecksOrPins();
 
-    protected bool CheckForChecksOrPinsDirectional(Direction dir){
-        Piece? ptr=null;
-        int x2=0,y2=0;
+    protected void SetDirection(Direction dir,out int x,out int y){
+        x=y=0;
         switch(dir){
             case Direction.Up:
-                ++y2;
+                ++y;
                 break;
             case Direction.UpRight:
-                ++x2;
-                ++y2;
+                ++x;
+                ++y;
                 break;
             case Direction.Right:
-                ++x2;
+                ++x;
                 break;
             case Direction.DownRight:
-                ++x2;
-                --y2;
+                ++x;
+                --y;
                 break;
             case Direction.Down:
-                --y2;
+                --y;
                 break;
             case Direction.DownLeft:
-                --x2;
-                --y2;
+                --x;
+                --y;
                 break;
             case Direction.Left:
-                --x2;
+                --x;
                 break;
             case Direction.UpLeft:
-                --x2;
-                ++y2;
+                --x;
+                ++y;
                 break;
             default:
                 throw new ArgumentException("How did you manage to get here?");
         }
+    }
 
-        bool res=false;
+    protected bool CheckForChecksOrPinsDirectional(Direction dir){
+        int x2,y2;
+        SetDirection(dir,out x2,out y2);
+
         for (int x=this.x+x2,y=this.y+y2;x>=0 && x<8 && y>=0 && y<8;x+=x2,y+=y2){     
             _my_board[x,y].attacked|=(color==Color.White ? Board.AttackType.White : Board.AttackType.Black);
 
             switch((int)_my_board[x,y].piece_type*(int)color){
-                case <0:
-                    if(_my_board[x,y].piece.type==PieceType.King){
-                        if(ptr!=null) ptr.pinned_from=dir;
-                        res=true;
-                    }
-                    else ptr=_my_board[x,y].piece;
+                case -(int)PieceType.King:
+                    return true;
+                case 0:
                     break;
-                case >0:
-                    return res;
+                default:
+                    return false;
             }
-            
         }
-        return res;
+        return false;
     }
 
     protected bool CheckMoveHorizontalVertical(int x,int y){
@@ -143,5 +148,9 @@ public abstract class Piece{
             return true;
         }
         else return false;
+    }
+
+    public void RestoreMoveCount(Board caller){
+        if(caller==_my_board) --move_count;
     }
 }

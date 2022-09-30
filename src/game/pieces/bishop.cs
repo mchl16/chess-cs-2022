@@ -7,8 +7,8 @@ public class Bishop : Piece{
 
     public override bool CheckMove(int x,int y) => CheckMoveDiagonal(x,y);
 
-    public override bool CheckForChecksOrPins(){
-        for (int i=2;i<=8;i+=2) if(CheckForChecksOrPinsDirectional((Direction)i)) return true;
-        return false;
+    public override Board.AttackType CheckForChecksOrPins(){
+        for (int i=2;i<=8;i+=2) if(CheckForChecksOrPinsDirectional((Direction)i)) return attack_type;
+        return Board.AttackType.None;
     }
 }

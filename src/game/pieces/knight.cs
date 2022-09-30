@@ -21,14 +21,14 @@ class Knight : Piece{
         }
     }
 
-    public override bool CheckForChecksOrPins(){
+    public override Board.AttackType CheckForChecksOrPins(){
         int a=2,b=1;
         for (int i=0;i<8;++i){
             int x=this.x+a;
             int y=this.y+b;
             if(x>=0 && x<8 && y>=0 && y<8){
-                _my_board[x,y].attacked|=(color==Color.White ? Board.AttackType.White : Board.AttackType.Black);
-                if((int)_my_board[x,y].piece_type*(int)color==(int)PieceType.King) return true;
+                _my_board[x,y].attacked|=attack_type;
+                if((int)_my_board[x,y].piece_type*(int)color==(int)PieceType.King) return attack_type;
             }
             
             int tmp=a; //this shit generates all 8 knight positions (maybe I'll come up with sth more elegant)
@@ -36,6 +36,6 @@ class Knight : Piece{
             b=tmp;
             if(i!=3) b=-b;
         }
-        return false;
+        return Board.AttackType.None;
     }
 }

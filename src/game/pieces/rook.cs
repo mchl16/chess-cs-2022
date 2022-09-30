@@ -7,8 +7,8 @@ public class Rook : Piece{
 
     public override bool CheckMove(int x,int y) => CheckMoveHorizontalVertical(x,y);
 
-    public override bool CheckForChecksOrPins(){
-        for (int i=1;i<=7;i+=2) if(CheckForChecksOrPinsDirectional((Direction)i)) return true;
-        return false;
+    public override Board.AttackType CheckForChecksOrPins(){
+        for (int i=1;i<=7;i+=2) if(CheckForChecksOrPinsDirectional((Direction)i)) return attack_type;
+        return Board.AttackType.None;
     }
 }

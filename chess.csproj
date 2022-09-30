@@ -31,5 +31,17 @@
     <Content Include="src\client\command_parser.cs" />
     <Content Include="src\board\board_creator.cs" />
     <Content Include="src\client\io.cs" />
+    <Content Include="src\game\board\board_creator.cs" />
+    <Content Include="src\game\board\board.cs" />
+    <Content Include="src\game\pieces\rook.cs" />
+    <Content Include="src\game\pieces\queen.cs" />
+    <Content Include="src\game\pieces\piece.cs" />
+    <Content Include="src\game\pieces\pawn.cs" />
+    <Content Include="src\game\pieces\knight.cs" />
+    <Content Include="src\game\pieces\king.cs" />
+    <Content Include="src\game\pieces\bishop.cs" />
+    <Content Include="src\client\position_reader.cs" />
+    <Content Include="src\game\board\board_manager" />
+    <Content Include="src\game\board\mock_board.cs" />
   </ItemGroup>
 </Project>

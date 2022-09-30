@@ -51,5 +51,12 @@ class King : Piece{
         base.MoveTo(x,y);
     }
 
-    public override bool CheckForChecksOrPins() => false; //kings are incapable of checking or pinning, they're pussies
+    public override Board.AttackType CheckForChecksOrPins(){
+        int x=0,y=0;
+        for (int i=1;i<=8;++i){
+            SetDirection((Direction)i,out x,out y);
+            if(x>=0 && x<8 && y>=0 && y<8) _my_board[x,y].attacked|=attack_type;
+        }
+        return Board.AttackType.None; //kings are incapable of checking or pinning, they're pussies
+    } 
 }

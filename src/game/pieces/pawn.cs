@@ -5,8 +5,6 @@ public class Pawn : Piece{
 
     public override PieceType type{get=>PieceType.Pawn;}
 
-    public int move_count{get;protected set;}
-
     /* constructors and destructors */
 
     public Pawn(Board board,Color color,int x,int y) : base(board,color,x,y){}
@@ -40,16 +38,22 @@ public class Pawn : Piece{
         }        
     }
 
-    protected override void PostMove(){
-        if(++move_count==1 && (y==3 || y==4)) _my_board.en_passant=true;
-        if(y==7) _my_board.MovePiece(Promote(x,7),x,7); //replace pawn with a new piece
-        else if(y==0) _my_board.MovePiece(Promote(x,0),x,0);
+    protected override Board.InputCallback PostMove(){
+        if(move_count==1 && (y==3 || y==4)) _my_board.en_passant=true;
+        if(y==7 || y==0) return new Board.InputCallback(Board.InputCallback.Type.Promote,""); //replace pawn with a new piece
+        else return new Board.InputCallback(Board.InputCallback.Type.NothingSpecial,"");
     }
 
-    public override bool CheckForChecksOrPins(){
-        if(x>0 && (int)_my_board[x-1,y+(int)color].piece_type*(int)color==(int)PieceType.King) return true;
-        if(x<7 && (int)_my_board[x+1,y+(int)color].piece_type*(int)color==(int)PieceType.King) return true;
-        return false;
+    public override Board.AttackType CheckForChecksOrPins(){
+        if(x>0){
+            _my_board[x-1,y+(int)color].attacked|=attack_type;
+            if((int)_my_board[x-1,y+(int)color].piece_type*(int)color==(int)PieceType.King) return attack_type;
+        }
+        if(x<7){
+            _my_board[x+1,y+(int)color].attacked|=attack_type;
+            if((int)_my_board[x+1,y+(int)color].piece_type*(int)color==(int)PieceType.King) return attack_type;
+        }
+        return Board.AttackType.None;
     }
 
     protected Piece Promote(int x,int y){

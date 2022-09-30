@@ -12,7 +12,7 @@ public class GameClient{
     /* constructors and destructors */
 
     public GameClient(Board.BoardInitMode mode,PositionReader pos,IO display){
-        this.board=new Board(mode,pos.GetPosition());
+        this.board=new Board(mode,pos.Read());
         this.display=display;
     }
 
@@ -41,23 +41,7 @@ public class GameClient{
             switch(t[0]){
                 case 0:
                     string s;
-                    var clb=Move(t[1],t[2],t[3],t[4]);
-                    switch(clb.result){
-                        case Board.InputCallback.Type.Error:
-                            display.PrintMessage("Error: "+clb.message+"\n");
-                            break;
-                        case Board.InputCallback.Type.Promote:
-                            
-                            display.DisplayBoard(board);
-                            try{
-                                CommandParser.Parse(s=display.HandlePromoteEvent());
-                            }
-                            catch(Exception e){
-                                display.PrintMessage(e.Message);
-                            }
-                            break;
-
-                    }
+                    HandleMoveCallback(Move(t[1],t[2],t[3],t[4]));
                     break;
                 case 1:
                     s=display.HandleYesNoEvent($"{WhoseTurn} requests draw. Do you accept?");
@@ -69,6 +53,26 @@ public class GameClient{
                 default:
                     break;
             }
+        }
+    }
+
+    protected void HandleMoveCallback(Board.InputCallback clb){
+        string s;
+        switch(clb.result){
+            case Board.InputCallback.Type.Error:
+                display.PrintMessage("Error: "+clb.message+"\n");
+                break;
+            case Board.InputCallback.Type.Promote:
+                
+                display.DisplayBoard(board);
+                try{
+                    CommandParser.Parse(s=display.HandlePromoteEvent());
+                }
+                catch(Exception e){
+                    display.PrintMessage(e.Message);
+                }
+                break;
+
         }
     }
 }
