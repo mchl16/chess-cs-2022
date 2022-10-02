@@ -50,17 +50,15 @@ public abstract class Piece{
 
     public abstract bool CheckMove(int x,int y);
 
-    public virtual void MoveTo(int x,int y){ 
+    public virtual bool MoveTo(int x,int y){ 
         _my_board.MovePiece(this,x,y);
         this.x=x;
         this.y=y;
         ++this.move_count;
-        PostMove();
+        return PostMove();
     }
 
-    protected virtual Board.InputCallback PostMove(){ //to be overridden by pawns when they promote
-        return new Board.InputCallback(Board.InputCallback.Type.NothingSpecial,"");
-    }  
+    protected virtual bool PostMove() => false; //to be overridden by pawns when they promote
 
     public abstract Board.AttackType CheckForChecksOrPins();
 

@@ -42,10 +42,9 @@ public class Pawn : Piece{
         }        
     }
 
-    protected override Board.InputCallback PostMove(){
+    protected override bool PostMove(){
         if(move_count==1 && (y==3 || y==4)) _my_board.en_passant=true;
-        if(y==7 || y==0) return new Board.InputCallback(Board.InputCallback.Type.Promote,""); //replace pawn with a new piece
-        else return new Board.InputCallback(Board.InputCallback.Type.NothingSpecial,"");
+        return (y==7 || y==0); //true if the pawn shall be promoted
     }
 
     public override Board.AttackType CheckForChecksOrPins(){

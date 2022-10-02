@@ -8,31 +8,24 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\moche\\.nuget\\packages\\": {},
-    "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "/home/moche/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\moche\\Desktop\\chess\\chess.csproj",
+      "projectUniqueName": "/home/moche/Code/chess-cs-2022/chess.csproj",
       "projectName": "chess",
-      "projectPath": "C:\\Users\\moche\\Desktop\\chess\\chess.csproj",
-      "packagesPath": "C:\\Users\\moche\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\moche\\Desktop\\chess\\obj\\",
+      "projectPath": "/home/moche/Code/chess-cs-2022/chess.csproj",
+      "packagesPath": "/home/moche/.nuget/packages/",
+      "outputPath": "/home/moche/Code/chess-cs-2022/obj/",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\moche\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/home/moche/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -65,7 +58,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.300\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/lib64/dotnet/sdk/6.0.108/RuntimeIdentifierGraph.json"
       }
     }
   }

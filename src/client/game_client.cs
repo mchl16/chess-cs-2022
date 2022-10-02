@@ -9,7 +9,7 @@ public class GameClient{
 
     public int move_count{get => board.move_count;}
 
-    public bool checkmate{get;protected set;}
+    public Board.InputCallback status{get;protected set;}
 
     /* constructors and destructors */
 
@@ -44,7 +44,7 @@ public class GameClient{
             switch(t[0]){
                 case 0:
                     string s;
-                    if(!checkmate) HandleMoveCallback(Move(t[1],t[2],t[3],t[4]));
+                    if(status!=Board.InputCallback.Type.Checkmate) HandleMoveCallback(Move(t[1],t[2],t[3],t[4]));
                     break;
                 case 1:
                     s=display.HandleYesNoEvent($"{WhoseTurn} requests draw. Do you accept?");

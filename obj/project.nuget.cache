@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lzWPk/nme9ED14IpKYDsKrUICDAWfpvuqoUz6OoCyqyj8X8ugpkOxFssqmRgRBmR/5zlJEyXkmoLo875YpknTw==",
+  "dgSpecHash": "VBGcUfTNu33zQGINoE4Mip+jq+wTuOKkW2as//cqaM91GM6PEhZMmPrgmcNtmy79qk2k/tDm1SNkaDam+HGm9Q==",
   "success": true,
-  "projectFilePath": "C:\\Users\\moche\\Desktop\\chess\\chess.csproj",
+  "projectFilePath": "/home/moche/Code/chess-cs-2022/chess.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }
