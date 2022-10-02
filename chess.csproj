@@ -44,5 +44,6 @@
     <Content Include="src\game\board\board_manager" />
     <Content Include="src\game\board\mock_board.cs" />
     <Content Include="build.sh" />
+    <Content Include="run.sh" />
   </ItemGroup>
 </Project>
