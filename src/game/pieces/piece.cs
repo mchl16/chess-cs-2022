@@ -23,7 +23,7 @@ public abstract class Piece{
 
     public int move_count{get;protected set;}
 
-    public bool moved{get => move_count==0;}
+    public bool moved{get => move_count>0;}
 
     protected Board _my_board;
 

@@ -5,6 +5,8 @@ public class Pawn : Piece{
 
     public override PieceType type{get=>PieceType.Pawn;}
 
+    protected int Advance(int n) => this.y+n*(int)color;
+
     /* constructors and destructors */
 
     public Pawn(Board board,Color color,int x,int y) : base(board,color,x,y){}
@@ -14,20 +16,22 @@ public class Pawn : Piece{
     public override bool CheckMove(int x,int y){
         switch(x-this.x){
             case 0:
-                if(this.y+(int)color==y) return (_my_board[x,this.y+(int)color].piece==null); //the basic move
-                else if(!moved && this.y+2*(int)color==y){ //advance 2 squares during the first move
+                if(Advance(1)==y) return (_my_board[x,Advance(1)].piece==null); //the basic move
+                else if(!moved && Advance(2)==y){ //advance 2 squares during the first move
                     
-                    return (_my_board[x,this.y+(int)color].piece==null && _my_board[x,this.y+2*(int)color].piece==null);
+                    return (_my_board[x,Advance(1)].piece==null && _my_board[x,Advance(2)].piece==null);
                 } 
                 else return false; //nothing else is legal, I guess
 
                  
             case -1:
             case 1:
-                if(this.y+(int)color==y){
+                if(Advance(1)==y){
                     if((int)_my_board[x,y].piece_type*(int)color<0) return true;
                     else if((int)_my_board[x,this.y].piece_type==-(int)PieceType.Pawn*(int)color){ //en passant
                         if(_my_board.en_passant){
+                            Console.WriteLine(_my_board.last_x);
+                            Console.WriteLine(_my_board.last_y);
                             return (_my_board.last_x==x && _my_board.last_y==this.y);
                         }
                     }
@@ -46,12 +50,12 @@ public class Pawn : Piece{
 
     public override Board.AttackType CheckForChecksOrPins(){
         if(x>0){
-            _my_board[x-1,y+(int)color].attacked|=attack_type;
-            if((int)_my_board[x-1,y+(int)color].piece_type*(int)color==(int)PieceType.King) return attack_type;
+            _my_board[x-1,Advance(1)].attacked|=attack_type;
+            if((int)_my_board[x-1,Advance(1)].piece_type*(int)color==(int)PieceType.King) return attack_type;
         }
         if(x<7){
-            _my_board[x+1,y+(int)color].attacked|=attack_type;
-            if((int)_my_board[x+1,y+(int)color].piece_type*(int)color==(int)PieceType.King) return attack_type;
+            _my_board[x+1,Advance(1)].attacked|=attack_type;
+            if((int)_my_board[x+1,Advance(1)].piece_type*(int)color==(int)PieceType.King) return attack_type;
         }
         return Board.AttackType.None;
     }

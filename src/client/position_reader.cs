@@ -13,13 +13,15 @@ public class PositionReader{
     }
 
     public virtual string Read(){
-        display.PrintMessage("Type the path to the save file:");
+        display.PrintMessage("Type the path to the save file or leave empty for the default position:");
         string s=display.GetInput();
+        
         try{
             return File.ReadAllText(s);
         }
         catch(Exception e){
-            throw e;
+            display.PrintMessage(e.Message);
+            return "";
         }
     }
 }

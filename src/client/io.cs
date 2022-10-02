@@ -27,7 +27,10 @@ public class IO{
         Console.WriteLine();
     }
 
-    public virtual string GetInput() => Console.ReadLine() ?? "";
+    public virtual string GetInput(){
+        Console.Write("> ");
+        return Console.ReadLine() ?? "";
+    }
 
     public virtual void PrintMessage(string s) => Console.WriteLine(s);
 

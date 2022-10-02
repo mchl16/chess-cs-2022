@@ -48,10 +48,10 @@ public static class CommandParser{
                 switch(tokens[1]){
                     case "giveup":
                     case "draw":
+                    case "undo":
                     default:
                         throw new ArgumentException("Provided an incorrect argument");
                 }
-                
 
             case "end!" or "exit!":
                 Environment.Exit(0);    

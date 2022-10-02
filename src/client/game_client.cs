@@ -7,12 +7,15 @@ public class GameClient{
 
     public IO display{get;init;}
 
-    public int move_count{get=>board.move_count;}
+    public int move_count{get => board.move_count;}
+
+    public bool checkmate{get;protected set;}
 
     /* constructors and destructors */
 
     public GameClient(Board.BoardInitMode mode,PositionReader pos,IO display){
-        this.board=new Board(mode,pos.Read());
+        if(mode==Board.BoardInitMode.DefaultPosition) this.board=new Board(mode);
+        else this.board=new Board(mode,pos.Read());
         this.display=display;
     }
 
@@ -41,7 +44,7 @@ public class GameClient{
             switch(t[0]){
                 case 0:
                     string s;
-                    HandleMoveCallback(Move(t[1],t[2],t[3],t[4]));
+                    if(!checkmate) HandleMoveCallback(Move(t[1],t[2],t[3],t[4]));
                     break;
                 case 1:
                     s=display.HandleYesNoEvent($"{WhoseTurn} requests draw. Do you accept?");
@@ -62,8 +65,8 @@ public class GameClient{
             case Board.InputCallback.Type.Error:
                 display.PrintMessage("Error: "+clb.message+"\n");
                 break;
+
             case Board.InputCallback.Type.Promote:
-                
                 display.DisplayBoard(board);
                 try{
                     CommandParser.Parse(s=display.HandlePromoteEvent());
@@ -73,6 +76,15 @@ public class GameClient{
                 }
                 break;
 
+            case Board.InputCallback.Type.CheckWhite:
+            case Board.InputCallback.Type.CheckBlack:
+                display.PrintMessage("Check!");
+                break;
+            
+            case Board.InputCallback.Type.Checkmate:
+                checkmate=true;
+                display.PrintMessage($"Checkmate! {WhoseTurn} loses.");
+                break;
         }
     }
 }
