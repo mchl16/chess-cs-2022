@@ -43,5 +43,6 @@
     <Content Include="src\client\position_reader.cs" />
     <Content Include="src\game\board\board_manager" />
     <Content Include="src\game\board\mock_board.cs" />
+    <Content Include="build.sh" />
   </ItemGroup>
 </Project>
