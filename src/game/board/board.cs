@@ -163,7 +163,7 @@ public partial class Board{
         if(en_passant && last_x==x && last_y==y0) fields[x,y0].piece=null!; //en passant capture, what an awful rule
         en_passant=false; //it gets way more attention in this code than actual use in chess
 
-        if(fields[x0,y0].piece.MoveTo(x,y)) return InputCallback(InputCallback.Type.Promote,$"{x} {y}");
+        if(fields[x0,y0].piece.MoveTo(x,y)) return new InputCallback(InputCallback.Type.Promote,$"{x} {y}");
 
         foreach(var i in fields) i.attacked=AttackType.None;
         AttackType check=AttackType.None;

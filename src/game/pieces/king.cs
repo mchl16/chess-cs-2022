@@ -45,10 +45,11 @@ class King : Piece{
         return true;
     }
 
-    public override void MoveTo(int x,int y){
+    public override bool MoveTo(int x,int y){
         if(x-this.x==2) _my_board[7,y].piece.MoveTo(5,y);  //move rook (unlike in IRL chess, king goes second,
         if(x-this.x==-2) _my_board[0,y].piece.MoveTo(3,y); //it's easier to code and fuck him)
         base.MoveTo(x,y);
+        return false;
     }
 
     public override Board.AttackType CheckForChecksOrPins(){

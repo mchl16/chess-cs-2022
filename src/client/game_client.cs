@@ -9,7 +9,7 @@ public class GameClient{
 
     public int move_count{get => board.move_count;}
 
-    public Board.InputCallback status{get;protected set;}
+    public Board.InputCallback.Type status{get;protected set;}
 
     /* constructors and destructors */
 
@@ -82,7 +82,7 @@ public class GameClient{
                 break;
             
             case Board.InputCallback.Type.Checkmate:
-                checkmate=true;
+                status=Board.InputCallback.Type.Checkmate;
                 display.PrintMessage($"Checkmate! {WhoseTurn} loses.");
                 break;
         }
