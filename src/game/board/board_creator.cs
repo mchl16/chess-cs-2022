@@ -12,7 +12,7 @@ public partial class Board{
         }
 
         [Flags]
-        private enum Castling{
+        private enum CastlingData{
             None=0,
             WhiteKing=1,
             WhiteQueen=2,
@@ -20,22 +20,22 @@ public partial class Board{
             BlackQueen=8
         };
 
-        private static Castling FENParseCastling(string data){
-            Castling res=Castling.None;
+        private static CastlingData FENParseCastling(string data){
+            CastlingData res=CastlingData.None;
 
             foreach(var i in data){
                 switch(i){
                     case 'K':
-                        res|=Castling.WhiteKing;
+                        res|=CastlingData.WhiteKing;
                         break;
                     case 'Q':
-                        res|=Castling.WhiteQueen;
+                        res|=CastlingData.WhiteQueen;
                         break;
                     case 'k':
-                        res|=Castling.BlackKing;
+                        res|=CastlingData.BlackKing;
                         break;
                     case 'q':
-                        res|=Castling.BlackQueen;
+                        res|=CastlingData.BlackQueen;
                         break;
                     default:
                         throw new ArgumentException("Error loading from FEN: malformed input file");   
@@ -46,22 +46,12 @@ public partial class Board{
 
         private static readonly char[] PieceLetters={'P','p','K','k','R','r','N','n','B','b','Q','q'};
 
-        public static Piece NewPiece(Board board,Piece.Color color,char name,int x,int y){
-            Type type=Type.GetType(name switch{
-                'P' or 'p' => "Pawn",
-                'K' or 'k' => "King",
-                'R' or 'r' => "Rook",
-                'N' or 'n' => "Knight",
-                'B' or 'b' => "Bishop",
-                'Q' or 'q' => "Queen",
-                _ => "Piece" //placeholder, throw an exception if it somehow gets here (can't create an abstract class)
-            })!;
-
-            return (Piece)Activator.CreateInstance(type,new object[]{board,color,x,y})!;
+        public static Piece NewPiece(Board board,Piece.Color color,string name,int x,int y,int move_count=0){
+            return (Piece)Activator.CreateInstance(Type.GetType(name)!,new object[]{board,color,x,y,move_count})!;
             //such disgusting reflection sorcery just to make the code look more elegant
         }
 
-        private static void FENSetPieces(Board board,string pos,Castling castle_data){
+        private static void FENSetPieces(Board board,string pos,CastlingData castle_data){
             int x=0,y=7;
 
             foreach(var i in pos){
@@ -83,17 +73,37 @@ public partial class Board{
                     _ => Piece.Color.White
                 };
 
-                Piece piece=NewPiece(board,col,i,x,y);
+                string name=(i switch{
+                    'P' or 'p' => "Pawn",
+                    'K' or 'k' => "King",
+                    'R' or 'r' => "Rook",
+                    'N' or 'n' => "Knight",
+                    'B' or 'b' => "Bishop",
+                    'Q' or 'q' => "Queen",
+                    _ => "Piece" //placeholder, throw an exception if it somehow gets here (can't create an abstract class)
+                })!;
 
-                bool moved=i switch{
-                    'K' => (castle_data&Castling.WhiteKing)!=Castling.None,
-                    'Q' => (castle_data&Castling.WhiteQueen)!=Castling.None,
-                    'k' => (castle_data&Castling.BlackKing)!=Castling.None,
-                    'q' => (castle_data&Castling.BlackQueen)!=Castling.None,
-                    _ => false
+                bool moved=(name,x,y) switch{
+                    ("King",4,0) => (castle_data&(CastlingData.WhiteKing|CastlingData.WhiteQueen))!=0,
+                    ("King",4,7) => (castle_data&(CastlingData.BlackKing|CastlingData.BlackQueen))!=0,
+                    ("King",_,_) => true,
+                    ("Rook",0,0) => (castle_data&CastlingData.WhiteQueen)!=0,
+                    ("Rook",7,0) => (castle_data&CastlingData.WhiteKing)!=0,
+                    ("Rook",0,7) => (castle_data&CastlingData.BlackQueen)!=0,
+                    ("Rook",7,7) => (castle_data&CastlingData.BlackKing)!=0,
+                    ("Rook",_,_) => true,
+                    (_,_,_) => false
                 };
+
+                Piece piece=NewPiece(board,col,name,x,y,moved ? 1 : 0);
+
+                
+
+
+
                 
                 
+                board[x,y].piece=piece;
 
                 ++x;
             }

@@ -9,7 +9,7 @@ public class Pawn : Piece{
 
     /* constructors and destructors */
 
-    public Pawn(Board board,Color color,int x,int y) : base(board,color,x,y){}
+    public Pawn(Board board,Color color,int x,int y,int move_count=0) : base(board,color,x,y,move_count){}
 
     /* methods */
 

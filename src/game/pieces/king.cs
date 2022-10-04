@@ -3,7 +3,7 @@ using System;
 class King : Piece{
     public override PieceType type{get=>PieceType.King;}
 
-    public King(Board board,Color color,int x,int y) : base(board,color,x,y){}
+    public King(Board board,Color color,int x,int y,int move_count=0) : base(board,color,x,y,move_count){}
 
     public override bool CheckMove(int x,int y){
         if(x-this.x<=1 && this.x-x<=1 && y-this.y<=1 && this.y-y<=1) return !CheckAttack(x,y);

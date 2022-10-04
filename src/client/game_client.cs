@@ -31,7 +31,7 @@ public class GameClient{
 
     public void Play(){
         while(true){
-            display.PrintMessage($"{WhoseTurn} to move");
+            if(status!=Board.InputCallback.Type.Checkmate) display.PrintMessage($"{WhoseTurn} to move");
             display.DisplayBoard(board);
 
             CommandParser.ParseResult command;
@@ -50,13 +50,23 @@ public class GameClient{
                         HandleMoveCallback(Move(command.data[0],command.data[1],command.data[2],command.data[3]));
                     }
                     break;
+
                 case CommandParser.ParseResult.ParseType.DrawRequest:
                     s=display.HandleYesNoEvent($"{WhoseTurn} requests draw. Do you accept?");
                     break;
+
                 case CommandParser.ParseResult.ParseType.GiveUpRequest:
                     display.HandleYesNoEvent($"{WhoseTurn} wants to give up. Do you accept?");
+                    break;                
+
+                case CommandParser.ParseResult.ParseType.UndoRequest:
+                    display.HandleYesNoEvent($"{WhoseTurn} wants to undo the last move. Do you accept?");
                     break;
-                    
+
+                case CommandParser.ParseResult.ParseType.ForceEnd:
+                    Environment.Exit(0);
+                    break;
+
                 default:
                     break;
             }
@@ -64,7 +74,6 @@ public class GameClient{
     }
 
     protected void HandleMoveCallback(Board.InputCallback clb){
-        string s;
         switch(clb.result){
             case Board.InputCallback.Type.Error:
                 display.PrintMessage("Error: "+clb.message+"\n");
@@ -72,12 +81,7 @@ public class GameClient{
 
             case Board.InputCallback.Type.Promote:
                 display.DisplayBoard(board);
-                try{
-                    CommandParser.Parse(s=display.HandlePromoteEvent());
-                }
-                catch(Exception e){
-                    display.PrintMessage(e.Message);
-                }
+                HandlePromoteEvent(clb.message!);
                 break;
 
             case Board.InputCallback.Type.CheckWhite:
@@ -93,28 +97,18 @@ public class GameClient{
     }
 
     protected void HandlePromoteEvent(string data){
-        CommandParser.ParseResult input;
+        string? piece_type=null;
+        while(piece_type==null){
+            display.PrintMessage("Type the name or a single letter symbol of a piece you want to promote "+
+                                 $"a pawn at {(char)(data[0]+('a'-'0'))}{(char)(data[2]+1)} to");
 
-        display.PrintMessage("Type \"promote <name of piece or single letter>\""+
-                                 $"to promote a pawn at {data[0]+('a'-'0')}{data[2]+1}");
-
-        begin:
-        try{
-            input=CommandParser.Parse(display.GetInput());
+            try{
+                piece_type=display.HandlePromoteEvent();
+            }
+            catch(Exception e){
+                display.PrintMessage(e.Message);
+            }
         }
-        catch(Exception e){
-            display.PrintMessage(e.Message);
-            return;
-        }
-
-        if(input.result!=CommandParser.ParseResult.ParseType.Promote) goto begin;
-
-        char piece_type=input.data[0] switch{
-            0 => 'R',
-            1 => 'N',
-            2 => 'B',
-            _ => 'Q'
-        };
         
         board.AddPiecePromote(piece_type,data[0]-'0',data[2]-'0');
     }

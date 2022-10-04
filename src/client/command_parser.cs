@@ -58,16 +58,28 @@ public static class CommandParser{
 
             case "request":
                 if(tokens.Length!=2) throw new ArgumentException("Provided an incorrect number of arguments");
-                res=(tokens[1] switch{
+                res=tokens[1] switch{
                     "giveup" => ParseResult.ParseType.GiveUpRequest,
                     "draw" => ParseResult.ParseType.DrawRequest,
                     "undo" => ParseResult.ParseType.UndoRequest,
                     _ => throw new ArgumentException("Provided an incorrect argument")
-                });
+                };
                 break;
 
             case "end!" or "exit!":
                 res=ParseResult.ParseType.ForceEnd;
+                break;
+
+            case "promote":
+                res=ParseResult.ParseType.Promote;
+                if(tokens[1].Length!=1) throw new ArgumentException("Provided an incorrect argument");
+                data=new int[]{tokens[1][0] switch{
+                    'R' => 0,
+                    'N' => 1,
+                    'B' => 2,
+                    'Q' => 3,
+                    _ => throw new ArgumentException("Provided an incorrect argument")
+                }};
                 break;
 
             default:

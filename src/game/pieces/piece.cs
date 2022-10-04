@@ -38,12 +38,12 @@ public abstract class Piece{
 
     /* constructors and destructors */
 
-    public Piece(Board board,Color color,int x,int y){
+    public Piece(Board board,Color color,int x,int y,int move_count=0){
         this._my_board=board;
         this.color=color;
         this.x=x;
         this.y=y;
-        this.move_count=0;
+        this.move_count=move_count;
     }
 
     /* methods */

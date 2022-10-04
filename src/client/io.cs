@@ -34,13 +34,18 @@ public class IO{
 
     public virtual void PrintMessage(string s) => Console.WriteLine(s);
 
-    public virtual string HandlePromoteEvent(){
-        PrintMessage("Promote a pawn at to:");
-        return GetInput();
-    }
-
     public virtual string HandleYesNoEvent(string message){
         PrintMessage(message);
         return GetInput();
+    }
+
+    public virtual string HandlePromoteEvent(){
+        return GetInput() switch{
+            "R" or "rook" => "Rook",
+            "N" or "knight" => "Rook",
+            "B" or "bishop" => "Bishop",
+            "Q" or "queen" => "Queen",
+            _ => throw new ArgumentException("Not a valid piece a pawn can be promoted to")
+        };
     }
 }

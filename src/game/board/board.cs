@@ -170,9 +170,8 @@ public partial class Board{
             return new InputCallback(InputCallback.Type.Promote,$"{x} {y}");
         }
 
-        foreach(var i in fields) i.attacked=AttackType.None;
-        AttackType check=AttackType.None;
-        foreach(var i in fields) if(i.piece!=null) check|=i.piece.CheckForChecksOrPins();
+        AttackType check=CheckForChecksOrPins();
+
         if((check&(color==Piece.Color.White ? AttackType.Black : AttackType.White))!=AttackType.None){
             return new InputCallback(InputCallback.Type.Error,"Cannot move a piece so king is attacked afterwards");
         }
@@ -190,13 +189,20 @@ public partial class Board{
         else return new InputCallback(InputCallback.Type.NothingSpecial,"");
     }
 
+    protected AttackType CheckForChecksOrPins(){
+        foreach(var i in fields) i.attacked=AttackType.None;
+        AttackType check=AttackType.None;
+        foreach(var i in fields) if(i.piece!=null) check|=i.piece.CheckForChecksOrPins();
+        return check;
+    }
+
     protected bool FindCheckSolutions(Piece.Color color){
         for (int x0=0;x0<8;++x0) for (int y0=0;y0<8;++y0){
             if(fields[x0,y0].piece_type*(int)color<=0) continue;
             for (int x=0;x<8;++x) for (int y=0;y<8;++y){
                 Piece.Color col=(color==Piece.Color.White ? Piece.Color.Black : Piece.Color.White);
                 var res=MakeMove(col,x0,y0,x,y,true).result;
-                if(res==InputCallback.Type.NothingSpecial) return true; 
+                if(res!=CheckCallback(col)) return true; 
             }
         }
         return false;
@@ -211,13 +217,14 @@ public partial class Board{
         --move_count;
     }
 
-    public InputCallback AddPiecePromote(char name,int x,int y){
+    public InputCallback AddPiecePromote(string name,int x,int y){
         try{
             MovePiece(BoardCreator.NewPiece(this,move_count%2==1 ? Piece.Color.Black : Piece.Color.White,name,x,y),x,y);
         }
         catch(Exception e){
             return new InputCallback(InputCallback.Type.Error,e.Message);
         }
+        ++move_count;
         return new InputCallback(InputCallback.Type.NothingSpecial,"");
     }
 
