@@ -45,5 +45,6 @@
     <Content Include="src\game\board\mock_board.cs" />
     <Content Include="build.sh" />
     <Content Include="run.sh" />
+    <Content Include="README.md" />
   </ItemGroup>
 </Project>

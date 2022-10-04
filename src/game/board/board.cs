@@ -46,6 +46,8 @@ public partial class Board{
 
     public bool en_passant;
 
+    public bool promote;
+
     List<List<PiecePrevious>> previous_moves;
 
     /* constructors and destructors */
@@ -163,7 +165,10 @@ public partial class Board{
         if(en_passant && last_x==x && last_y==y0) fields[x,y0].piece=null!; //en passant capture, what an awful rule
         en_passant=false; //it gets way more attention in this code than actual use in chess
 
-        if(fields[x0,y0].piece.MoveTo(x,y)) return new InputCallback(InputCallback.Type.Promote,$"{x} {y}");
+        if(fields[x0,y0].piece.MoveTo(x,y)){
+            promote=true;
+            return new InputCallback(InputCallback.Type.Promote,$"{x} {y}");
+        }
 
         foreach(var i in fields) i.attacked=AttackType.None;
         AttackType check=AttackType.None;
@@ -204,6 +209,16 @@ public partial class Board{
             en_passant=i.en_passant;
         }
         --move_count;
+    }
+
+    public InputCallback AddPiecePromote(char name,int x,int y){
+        try{
+            MovePiece(BoardCreator.NewPiece(this,move_count%2==1 ? Piece.Color.Black : Piece.Color.White,name,x,y),x,y);
+        }
+        catch(Exception e){
+            return new InputCallback(InputCallback.Type.Error,e.Message);
+        }
+        return new InputCallback(InputCallback.Type.NothingSpecial,"");
     }
 
     public void MovePiece(Piece piece,int x,int y){

@@ -46,6 +46,21 @@ public partial class Board{
 
         private static readonly char[] PieceLetters={'P','p','K','k','R','r','N','n','B','b','Q','q'};
 
+        public static Piece NewPiece(Board board,Piece.Color color,char name,int x,int y){
+            Type type=Type.GetType(name switch{
+                'P' or 'p' => "Pawn",
+                'K' or 'k' => "King",
+                'R' or 'r' => "Rook",
+                'N' or 'n' => "Knight",
+                'B' or 'b' => "Bishop",
+                'Q' or 'q' => "Queen",
+                _ => "Piece" //placeholder, throw an exception if it somehow gets here (can't create an abstract class)
+            })!;
+
+            return (Piece)Activator.CreateInstance(type,new object[]{board,color,x,y})!;
+            //such disgusting reflection sorcery just to make the code look more elegant
+        }
+
         private static void FENSetPieces(Board board,string pos,Castling castle_data){
             int x=0,y=7;
 
@@ -68,15 +83,7 @@ public partial class Board{
                     _ => Piece.Color.White
                 };
 
-                Type type=Type.GetType(i switch{
-                    'P' or 'p' => "Pawn",
-                    'K' or 'k' => "King",
-                    'R' or 'r' => "Rook",
-                    'N' or 'n' => "Knight",
-                    'B' or 'b' => "Bishop",
-                    'Q' or 'q' => "Queen",
-                    _ => "Piece" //placeholder, throw an exception if it somehow gets here (can't create an abstract class)
-                })!;
+                Piece piece=NewPiece(board,col,i,x,y);
 
                 bool moved=i switch{
                     'K' => (castle_data&Castling.WhiteKing)!=Castling.None,
@@ -86,8 +93,7 @@ public partial class Board{
                     _ => false
                 };
                 
-                board[x,y].piece=(Piece)Activator.CreateInstance(type,new object[]{board,col,x,y})!;
-                //such disgusting reflection sorcery just to make the code look more elegant
+                
 
                 ++x;
             }

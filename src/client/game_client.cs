@@ -33,24 +33,28 @@ public class GameClient{
         while(true){
             display.PrintMessage($"{WhoseTurn} to move");
             display.DisplayBoard(board);
-            int[] t;
+
+            CommandParser.ParseResult command;
             try{
-                t=CommandParser.Parse(display.GetInput());
+                command=CommandParser.Parse(display.GetInput());
             }
             catch(Exception e){
                 display.PrintMessage(e.Message);
                 continue;
             }
-            switch(t[0]){
-                case 0:
+            
+            switch(command.result){
+                case CommandParser.ParseResult.ParseType.Move:
                     string s;
-                    if(status!=Board.InputCallback.Type.Checkmate) HandleMoveCallback(Move(t[1],t[2],t[3],t[4]));
+                    if(status!=Board.InputCallback.Type.Checkmate){
+                        HandleMoveCallback(Move(command.data[0],command.data[1],command.data[2],command.data[3]));
+                    }
                     break;
-                case 1:
+                case CommandParser.ParseResult.ParseType.DrawRequest:
                     s=display.HandleYesNoEvent($"{WhoseTurn} requests draw. Do you accept?");
                     break;
-                case 2:
-                    display.HandleYesNoEvent($"{WhoseTurn} requests draw. Do you accept?");
+                case CommandParser.ParseResult.ParseType.GiveUpRequest:
+                    display.HandleYesNoEvent($"{WhoseTurn} wants to give up. Do you accept?");
                     break;
                     
                 default:
@@ -86,5 +90,37 @@ public class GameClient{
                 display.PrintMessage($"Checkmate! {WhoseTurn} loses.");
                 break;
         }
+    }
+
+    protected void HandlePromoteEvent(string data){
+        CommandParser.ParseResult input;
+
+        display.PrintMessage("Type \"promote <name of piece or single letter>\""+
+                                 $"to promote a pawn at {data[0]+('a'-'0')}{data[2]+1}");
+
+        begin:
+        try{
+            input=CommandParser.Parse(display.GetInput());
+        }
+        catch(Exception e){
+            display.PrintMessage(e.Message);
+            return;
+        }
+
+        if(input.result!=CommandParser.ParseResult.ParseType.Promote) goto begin;
+
+        char piece_type=input.data[0] switch{
+            0 => 'R',
+            1 => 'N',
+            2 => 'B',
+            _ => 'Q'
+        };
+        
+        board.AddPiecePromote(piece_type,data[0]-'0',data[2]-'0');
+    }
+
+    protected void HandleYesNoEvent(string message){
+        display.PrintMessage(message);
+
     }
 }
