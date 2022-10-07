@@ -1,6 +1,6 @@
 using System;
 
-public class IO{
+public class IO : IInputOutput{
     /* methods */
 
     public virtual void DisplayBoard(Board board){
@@ -34,17 +34,28 @@ public class IO{
 
     public virtual void PrintMessage(string s) => Console.WriteLine(s);
 
-    public virtual string HandleYesNoEvent(string message){
+    public virtual bool HandleYesNoEvent(string message){
         PrintMessage(message);
-        return GetInput();
+        switch(GetInput()){
+            case "Y" or "y" or "yes" or "Yes":
+                PrintMessage("Request accepted");
+                return true;
+                
+            case "N" or "n" or "no" or "No": 
+                PrintMessage("Request not accepted");
+                return false;
+
+            default:
+                throw new ArgumentException("Not a valid response to a yes/no question");
+        }
     }
 
     public virtual string HandlePromoteEvent(){
         return GetInput() switch{
-            "R" or "rook" => "Rook",
-            "N" or "knight" => "Rook",
-            "B" or "bishop" => "Bishop",
-            "Q" or "queen" => "Queen",
+            "R" or "r" or "rook" => "Rook",
+            "N" or "n" or "knight" => "Knight",
+            "B" or "b" or "bishop" => "Bishop",
+            "Q" or "q" or "queen" => "Queen",
             _ => throw new ArgumentException("Not a valid piece a pawn can be promoted to")
         };
     }

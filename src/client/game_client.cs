@@ -5,7 +5,7 @@ public class GameClient{
 
     protected Board board{get;init;}
 
-    public IO display{get;init;}
+    public IInputOutput display{get;init;}
 
     public int move_count{get => board.move_count;}
 
@@ -13,10 +13,19 @@ public class GameClient{
 
     /* constructors and destructors */
 
-    public GameClient(Board.BoardInitMode mode,PositionReader pos,IO display){
-        if(mode==Board.BoardInitMode.DefaultPosition) this.board=new Board(mode);
-        else this.board=new Board(mode,pos.Read());
+    public GameClient(Board.BoardInitMode mode,PositionReader pos,IInputOutput display){
         this.display=display;
+
+        Board.InputCallback status=new Board.InputCallback();
+        try{ //cannot use the 
+            if(mode==Board.BoardInitMode.DefaultPosition) this.board=new Board(mode,out status);
+            else this.board=new Board(mode,out status,pos.Read());
+        }
+        catch(Exception e){
+            display.PrintMessage(e.Message);
+            throw;
+        }
+        
     }
 
     /* methods */
@@ -28,6 +37,8 @@ public class GameClient{
     //protected 
 
     protected string WhoseTurn{get => move_count%2==1 ? "Black" : "White";}
+
+    
 
     public void Play(){
         while(true){
@@ -45,22 +56,30 @@ public class GameClient{
             
             switch(command.result){
                 case CommandParser.ParseResult.ParseType.Move:
-                    string s;
                     if(status!=Board.InputCallback.Type.Checkmate){
                         HandleMoveCallback(Move(command.data[0],command.data[1],command.data[2],command.data[3]));
                     }
                     break;
 
                 case CommandParser.ParseResult.ParseType.DrawRequest:
-                    s=display.HandleYesNoEvent($"{WhoseTurn} requests draw. Do you accept?");
+                    if(HandleYesNoEvent($"{WhoseTurn} requests draw. Do you accept?")){
+                        display.PrintMessage("Draw.");
+                        
+                    }
+                    
                     break;
 
                 case CommandParser.ParseResult.ParseType.GiveUpRequest:
-                    display.HandleYesNoEvent($"{WhoseTurn} wants to give up. Do you accept?");
+                    if(HandleYesNoEvent($"{WhoseTurn} wants to give up. Do you accept?")){
+                        display.PrintMessage($"{WhoseTurn} loses.");
+                        status=Board.InputCallback.Type.Checkmate;
+                    }
                     break;                
 
                 case CommandParser.ParseResult.ParseType.UndoRequest:
-                    display.HandleYesNoEvent($"{WhoseTurn} wants to undo the last move. Do you accept?");
+                    if(HandleYesNoEvent($"{WhoseTurn} wants to undo the last move. Do you accept?")){
+                        status=board.UndoLastMove().result;
+                    }
                     break;
 
                 case CommandParser.ParseResult.ParseType.ForceEnd:
@@ -100,7 +119,7 @@ public class GameClient{
         string? piece_type=null;
         while(piece_type==null){
             display.PrintMessage("Type the name or a single letter symbol of a piece you want to promote "+
-                                 $"a pawn at {(char)(data[0]+('a'-'0'))}{(char)(data[2]+1)} to");
+                                 $"a pawn at {(char)(data[0]+('a'-'0'))}{(char)(data[2]+1)} to:");
 
             try{
                 piece_type=display.HandlePromoteEvent();
@@ -110,11 +129,18 @@ public class GameClient{
             }
         }
         
-        board.AddPiecePromote(piece_type,data[0]-'0',data[2]-'0');
+        HandleMoveCallback(board.AddPiece(piece_type,data[0]-'0',data[2]-'0'));
     }
 
-    protected void HandleYesNoEvent(string message){
-        display.PrintMessage(message);
+    protected bool HandleYesNoEvent(string message){
+        bool answer;
+        try{
+            answer=display.HandleYesNoEvent(message);
+        }
+        catch{
+            throw;
+        }
 
+        return answer;
     }
 }

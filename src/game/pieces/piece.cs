@@ -148,7 +148,9 @@ public abstract class Piece{
         else return false;
     }
 
-    public void RestoreMoveCount(Board caller){
-        if(caller==_my_board) --move_count;
+    public void UndoMove(int x,int y){
+        --move_count;
+        this.x=x;
+        this.y=y;
     }
 }

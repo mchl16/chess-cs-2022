@@ -46,5 +46,9 @@
     <Content Include="build.sh" />
     <Content Include="run.sh" />
     <Content Include="README.md" />
+    <Content Include="src\client\IInputOutput.cs" />
+    <Content Include="src\game\board\board_methods.cs" />
+    <Content Include="src\tests\en_passant.in" />
+    <Content Include="src\client\IMenu.cs" />
   </ItemGroup>
 </Project>

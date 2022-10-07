@@ -34,7 +34,7 @@ public static class CommandParser{
         int[] data=null!;
 
         switch(tokens[0]){
-            case "#": //ignore comments/annotations etc. - useful for unit testing
+            case "#" or "": //ignore comments/annotations etc. - useful for unit testing
                 return new ParseResult(ParseResult.ParseType.Empty);
 
             case "move":

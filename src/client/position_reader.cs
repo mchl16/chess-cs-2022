@@ -2,13 +2,13 @@ using System;
 using System.IO;
 
 public class PositionReader{
-    protected IO display;
+    protected IInputOutput display;
 
     public enum Mode{
         File
     };
 
-    public PositionReader(IO display){
+    public PositionReader(IInputOutput display){
         this.display=display;
     }
 

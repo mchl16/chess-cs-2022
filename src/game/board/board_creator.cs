@@ -65,6 +65,7 @@ public partial class Board{
                     continue;
                 }    
                 else if(!PieceLetters.Contains(i)){
+                    Console.WriteLine(i);
                     throw new ArgumentException("Error loading from FEN: malformed input file");  
                 }
 
@@ -84,13 +85,13 @@ public partial class Board{
                 })!;
 
                 bool moved=(name,x,y) switch{
-                    ("King",4,0) => (castle_data&(CastlingData.WhiteKing|CastlingData.WhiteQueen))!=0,
-                    ("King",4,7) => (castle_data&(CastlingData.BlackKing|CastlingData.BlackQueen))!=0,
+                    ("King",4,0) => (castle_data&(CastlingData.WhiteKing|CastlingData.WhiteQueen))==CastlingData.None,
+                    ("King",4,7) => (castle_data&(CastlingData.BlackKing|CastlingData.BlackQueen))==CastlingData.None,
                     ("King",_,_) => true,
-                    ("Rook",0,0) => (castle_data&CastlingData.WhiteQueen)!=0,
-                    ("Rook",7,0) => (castle_data&CastlingData.WhiteKing)!=0,
-                    ("Rook",0,7) => (castle_data&CastlingData.BlackQueen)!=0,
-                    ("Rook",7,7) => (castle_data&CastlingData.BlackKing)!=0,
+                    ("Rook",0,0) => (castle_data&CastlingData.WhiteQueen)==CastlingData.None,
+                    ("Rook",7,0) => (castle_data&CastlingData.WhiteKing)==CastlingData.None,
+                    ("Rook",0,7) => (castle_data&CastlingData.BlackQueen)==CastlingData.None,
+                    ("Rook",7,7) => (castle_data&CastlingData.BlackKing)==CastlingData.None,
                     ("Rook",_,_) => true,
                     (_,_,_) => false
                 };

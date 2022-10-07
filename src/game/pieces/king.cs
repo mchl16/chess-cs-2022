@@ -6,18 +6,15 @@ class King : Piece{
     public King(Board board,Color color,int x,int y,int move_count=0) : base(board,color,x,y,move_count){}
 
     public override bool CheckMove(int x,int y){
+        Console.WriteLine(move_count);
         if(x-this.x<=1 && this.x-x<=1 && y-this.y<=1 && this.y-y<=1) return !CheckAttack(x,y);
         else if(!moved && y==this.y){ //castling 
-            
-            switch(x-this.x){
-                case 2: //king's side castling
-                    return CheckCastle(CastleDirection.King);
-                case -2: //queen's side castling
-                    return CheckCastle(CastleDirection.Queen);
-                default:
-                    Console.WriteLine(x-this.x);
-                    return false;
-            }
+            Console.WriteLine("1!");
+            return (x-this.x) switch{
+                2 => CheckCastle(CastleDirection.King), //king's side castling
+                -2 => CheckCastle(CastleDirection.Queen),//queen's side castling
+                _ => false
+            };
         } 
         else return false;
     }
@@ -33,6 +30,9 @@ class King : Piece{
 
     protected bool CheckCastle(CastleDirection dir){
         int k=(int)dir;
+
+        if(moved) return false;
+        
         if(_my_board[(k==-1 ? 0 : 7),y].piece_type*(int)color!=(int)PieceType.Rook) return false;
         if(_my_board[(k==-1 ? 0 : 7),y].piece.moved) return false;
 

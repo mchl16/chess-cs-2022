@@ -1,0 +1,7 @@
+../../../src/tests/default_position.fen
+
+move f2 f3
+move e7 e5
+
+move g2 g4
+move d8 h4

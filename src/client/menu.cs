@@ -1,6 +1,6 @@
 using System;
 
-public class Menu{
+public class Menu : IMenu{
     public virtual void Show(){
         Console.WriteLine("Shitty OOP(s) Chess\n");
         Console.WriteLine("Type \"help\" for help");
