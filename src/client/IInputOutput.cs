@@ -10,4 +10,8 @@ public interface IInputOutput{
     public bool HandleYesNoEvent(string message);
 
     public string HandlePromoteEvent();
+
+    public void Initialize();
+
+    public Board.BoardInitMode HandleNewGameEvent();
 }

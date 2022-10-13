@@ -1,8 +1,6 @@
 using System;
 
 public static class CommandParser{
-    
-
     public struct ParseResult{
         public enum ParseType{
             Empty,
@@ -80,6 +78,18 @@ public static class CommandParser{
                     'Q' => 3,
                     _ => throw new ArgumentException("Provided an incorrect argument")
                 }};
+                break;
+
+            case "save":
+                res=ParseResult.ParseType.Save;
+                break;
+
+            case "load":
+                res=ParseResult.ParseType.Load;
+                break;
+
+            case "new":
+                res=ParseResult.ParseType.NewGame;
                 break;
 
             default:

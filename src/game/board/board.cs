@@ -154,6 +154,7 @@ public partial class Board{
     }
 
     public InputCallback MakeMove(Piece.Color color,int x0,int y0,int x,int y,bool test=false){
+        Console.WriteLine(move_count+" "+x0+" "+y0+" "+x+" "+y);
         var check1=CheckBasicConditions(color,x0,y0,x,y);
         if(check1.result==InputCallback.Type.Error) return check1;
 

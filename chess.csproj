@@ -49,6 +49,9 @@
     <Content Include="src\client\IInputOutput.cs" />
     <Content Include="src\game\board\board_methods.cs" />
     <Content Include="src\tests\en_passant.in" />
-    <Content Include="src\client\IMenu.cs" />
+    <Content Include="src\client\cli" />
+    <Content Include="src\client\cli\io.cs" />
+    <Content Include="src\client\cli\menu.cs" />
+    <Content Include="src\game\game_client.cs" />
   </ItemGroup>
 </Project>

@@ -28,7 +28,7 @@ class Knight : Piece{
             int y=this.y+b;
             if(x>=0 && x<8 && y>=0 && y<8){
                 _my_board[x,y].attacked|=attack_type;
-                if((int)_my_board[x,y].piece_type*(int)color==(int)PieceType.King) return attack_type;
+                if((int)_my_board[x,y].piece_type*(int)color==-(int)PieceType.King) return attack_type;
             }
             
             int tmp=a; //this shit generates all 8 knight positions (maybe I'll come up with sth more elegant)
