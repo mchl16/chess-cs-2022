@@ -49,14 +49,13 @@ public class Pawn : Piece{
 
     public override Board.AttackType CheckForChecksOrPins(){
         if(y==0 || y==7) return Board.AttackType.None;
-        if(x>0){
-            _my_board[x-1,Advance(1)].attacked|=attack_type;
-            if((int)_my_board[x-1,Advance(1)].piece_type*(int)color==-(int)PieceType.King) return attack_type;
-        }
-        if(x<7){
-            _my_board[x+1,Advance(1)].attacked|=attack_type;
-            if((int)_my_board[x+1,Advance(1)].piece_type*(int)color==-(int)PieceType.King) return attack_type;
-        }
+
+        if(x>0) _my_board[x-1,Advance(1)].attacked|=attack_type;
+        if(x<7) _my_board[x+1,Advance(1)].attacked|=attack_type;
+
+        if(x>0 && ((int)_my_board[x-1,Advance(1)].piece_type*(int)color==-(int)PieceType.King)) return attack_type;
+        if(x<7 && ((int)_my_board[x+1,Advance(1)].piece_type*(int)color==-(int)PieceType.King)) return attack_type;
+        
         return Board.AttackType.None;
     }
 

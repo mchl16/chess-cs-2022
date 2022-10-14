@@ -137,12 +137,12 @@ public abstract class Piece{
         int f;
         if(this.x+y==this.y+x){ //right diagonal
             f=x.CompareTo(this.x);
-            for (int i=this.x+f,j=this.y+f;i!=x+f;i+=f,j+=f) if(_my_board[i,j].piece!=null) return false;
+            for (int i=this.x+f,j=this.y+f;i!=x;i+=f,j+=f) if(_my_board[i,j].piece!=null) return false;
             return true;
         }
         else if(x+y==this.x+this.y){ //left diagonal
             f=x.CompareTo(this.x);
-            for (int i=this.x+f,j=this.y-f;i!=x+f;i+=f,j-=f) if(_my_board[i,j].piece!=null) return false;
+            for (int i=this.x+f,j=this.y-f;i!=x;i+=f,j-=f) if(_my_board[i,j].piece!=null) return false;
             return true;
         }
         else return false;

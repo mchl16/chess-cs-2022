@@ -53,5 +53,9 @@
     <Content Include="src\client\cli\io.cs" />
     <Content Include="src\client\cli\menu.cs" />
     <Content Include="src\game\game_client.cs" />
+    <Content Include="src\tests\ruy_lopez_but_weird.in" />
+    <Content Include="src\tests\checked_castle.in" />
+    <Content Include="src\tests\scandinavian_gone_wrong.in" />
+    <Content Include="src\tests\fool_mate.in" />
   </ItemGroup>
 </Project>

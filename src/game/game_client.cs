@@ -74,7 +74,9 @@ public class GameClient{
 
                 case CommandParser.ParseResult.ParseType.UndoRequest:
                     if(HandleYesNoEvent($"{WhoseTurn} wants to undo the last move. Do you accept?")){
-                        status=board.UndoLastMove().result;
+                        var clb=board.UndoLastMove();
+                        status=clb.result;
+                        HandleMoveCallback(clb);
                     }
                     break;
 

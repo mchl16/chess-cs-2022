@@ -1,0 +1,26 @@
+new
+
+move e2 e4
+move d7 d5
+# let the shitshow begin
+move e4 e5
+move f7 f5
+# en passant test, the first attempt should fail, the second one should be fine
+move e5 d6
+move e5 f6
+# let's undo this
+request undo
+y
+move e5 f6
+move e7 e5
+move f6 f7
+# check rollback test 
+move e8 f7
+request undo
+y
+move e8 e7
+# promote rollback test (and check too!)
+move f7 g8
+N 
+request undo
+y

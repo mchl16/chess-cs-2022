@@ -1,0 +1,21 @@
+new
+
+move e2 e4
+move e7 e5
+move g1 f3
+move b8 c6
+move f1 b5
+move d7 d6
+# now it becomes cursed
+move f3 e5
+# let's test pins (the next move shouldn't be allowed)
+move c6 e5
+move g8 f6
+move e5 c6
+move f8 e7
+# discovered check
+move c6 d4
+# castling under check test (should be allowed in this particular case)
+move e8 g8
+
+

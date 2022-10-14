@@ -43,6 +43,8 @@ public partial class Board{
 
     public Piece.Color WhoseTurn{get => move_count%2==1 ? Piece.Color.Black : Piece.Color.White;}
 
+    public Piece.Color NotWhoseTurn{get => move_count%2==1 ? Piece.Color.White : Piece.Color.Black;}
+
     public int last_x{get;protected set;}=-1;
     public int last_y{get;protected set;}=-1;
 
@@ -171,7 +173,7 @@ public partial class Board{
         previous_moves.Add(new List<PiecePrevious>());
 
         if(taken_piece!=null){
-            taken_piece.MoveTo(x,y); //a dumb way to increment its move count while doing nothing (useful when restoring a piece)
+            taken_piece.MoveTo(taken_piece.x,taken_piece.y); //a dumb way to increment its move count while doing nothing (useful when restoring a piece)
             previous_moves[^1].Add(new PiecePrevious(taken_piece,taken_piece.x,taken_piece.y,en_passant));
         }
 
@@ -195,8 +197,9 @@ public partial class Board{
 
         AttackType check=CheckForChecksOrPins();
         
+        ++move_count;
         if((check&EnemyAttackType(color))!=AttackType.None){
-            RestorePieces();
+            UndoLastMove();
             return new InputCallback(InputCallback.Type.Error,"Cannot move a piece so king is attacked afterwards");
         }
 
@@ -205,14 +208,13 @@ public partial class Board{
             return new InputCallback(InputCallback.Type.Promote,$"{x} {y}");
         }
 
-        ++move_count;
         last_x=x;
         last_y=y;
 
         if(check!=Board.AttackType.None){
             Piece.Color color2=(color==Piece.Color.White ? Piece.Color.Black : Piece.Color.White);
-            if(test){
-                return new InputCallback(CheckCallback(color),"");
+            if(test){ //disables FindCheckSolutions
+                return new InputCallback(CheckCallback(color),""); 
             }
             return new InputCallback(FindCheckSolutions(color2) ? CheckCallback(color) : InputCallback.Type.Checkmate,"");
         }
@@ -231,10 +233,10 @@ public partial class Board{
             if(fields[x0,y0].piece_type*(int)color<=0) continue;
 
             for (int x=0;x<8;++x) for (int y=0;y<8;++y){
-                Piece.Color col=(color==Piece.Color.White ? Piece.Color.Black : Piece.Color.White);
+            //    Piece.Color col=(color==Piece.Color.White ? Piece.Color.Black : Piece.Color.White);
                 var res=MakeMove(color,x0,y0,x,y,true).result;
 
-                if(res!=InputCallback.Type.Error) RestorePieces();
+                if(res!=InputCallback.Type.Error) UndoLastMove();
                 
                 if(res==CheckCallback(color) || res==InputCallback.Type.NothingSpecial) return true;
             }
@@ -258,17 +260,17 @@ public partial class Board{
             last_y=i.y;
         }
         --move_count;
+        previous_moves.RemoveAt(previous_moves.Count-1);
     }
 
     public InputCallback AddPiece(string name,int x,int y){
-        Piece.Color col=WhoseTurn;
+        Piece.Color col=NotWhoseTurn; //relies on the fact that move count is increased before the callback
         try{
             MovePiece(BoardCreator.NewPiece(this,col,name,x,y),x,y);
         }
         catch(Exception e){
             return new InputCallback(InputCallback.Type.Error,e.Message);
         }
-        ++move_count;
 
         AttackType check=CheckForChecksOrPins();
         if(check!=AttackType.None) return new InputCallback(CheckCallback(col),""); 

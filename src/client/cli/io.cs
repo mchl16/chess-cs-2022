@@ -9,7 +9,7 @@ public class IO : IInputOutput{
     }
 
     public Board.BoardInitMode HandleNewGameEvent(){
-        PrintMessage("Write ");
+        PrintMessage("Type FEN or PGN to load a saved game, leave empty for a new game");
         return GetInput() switch{
             "" => Board.BoardInitMode.DefaultPosition,
             "FEN" => Board.BoardInitMode.FEN,
